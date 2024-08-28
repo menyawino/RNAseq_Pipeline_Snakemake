@@ -2,7 +2,7 @@
 
 rule alignment:
     message:
-        "Aligning reads to the reference genome"
+        "Aligning sample {wildcards.sample}_{lane} to the reference genome"
     input:
         fq1="analysis/002_trimming/{sample}/{sample}_{lane}_R1_001_trimmed.fastq.gz",
         fq2="analysis/002_trimming/{sample}/{sample}_{lane}_R2_001_trimmed.fastq.gz"
@@ -36,13 +36,16 @@ rule alignment:
 #  A rule to sort the aligned reads with samtools sort
 
 rule sort_bam:
-    message: "Sorting the aligned reads"
+    message: 
+        "Sorting aligned sample {wildcards.sample}_{lane}"
     input:
         "analysis/004_alignment/hisat2/{sample}_{lane}/{sample}_{lane}.bam"
     output:
         "analysis/004_alignment/hisat2/{sample}_{lane}/{sample}_{lane}_Aligned.sortedByCoord.out.bam"
-    conda: "envs/004_alignment.yml"
-    threads: 8
+    conda: 
+        "envs/004_alignment.yml"
+    threads: 
+        8
     params: 
         path=lambda wildcards: "results/{}".format(wildcards.sample)
     log:

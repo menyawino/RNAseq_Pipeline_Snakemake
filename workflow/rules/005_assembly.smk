@@ -2,7 +2,7 @@
 
 rule stringtie_assembly:
     message: 
-        "Building individual assembly for {sample}_{lane}"
+        "Building individual assembly for {wildcards.sample}_{lane}"
     input:
         bam="analysis/004_alignment/hisat2/{sample}_{lane}/{sample}_{lane}_Aligned.sortedByCoord.out.bam"
     output:

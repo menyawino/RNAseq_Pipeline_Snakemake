@@ -1,6 +1,6 @@
 rule stringtie_count:
     message: 
-        "Counting reads with stringtie"
+        "Counting reads in sample {wildcards.sample}_{lane} with stringtie"
     input:
         gtf="analysis/005_assembly/merged.gtf",
         bam=expand("analysis/004_alignment/hisat2/{sample}_{lane}/{sample}_{lane}_Aligned.sortedByCoord.out.bam",
@@ -30,7 +30,7 @@ rule stringtie_count:
 
 rule kallisto_count:
     message:
-        "Counting reads with kallisto"
+        "Counting reads in sample {wildcards.sample}_{lane} with kallisto"
     input:
         fastq1="analysis/002_trimming/{sample}/{sample}_{lane}_R1_001_trimmed.fastq.gz",
         fastq2="analysis/002_trimming/{sample}/{sample}_{lane}_R2_001_trimmed.fastq.gz"

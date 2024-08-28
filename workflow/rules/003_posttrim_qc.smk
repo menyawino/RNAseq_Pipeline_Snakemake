@@ -1,14 +1,17 @@
 # A rule to perform post-trimming QC
 
 rule posttrim_fastqc:
-    message: "Running FastQC on trimmed data"
-    conda: "envs/001_QC.yml"
+    message: 
+        "Running FastQC on trimmed sample {wildcards.sample}_{lane}_{R}"
+    conda: 
+        "envs/001_QC.yml"
     input:
         "analysis/002_trimming/{sample}/{sample}_{lane}_{R}_001_trimmed.fastq.gz"
     output:
         html="analysis/003_posttrim_qc/{sample}/{sample}_{lane}_{R}_001_trimmed_fastqc.html",
         zip="analysis/003_posttrim_qc/{sample}/{sample}_{lane}_{R}_001_trimmed_fastqc.zip"
-    threads: config["threads"]
+    threads: 
+        config["threads"]
     params: 
         path=lambda wildcards: "analysis/003_posttrim_qc/{}".format(wildcards.sample)
     log:
@@ -26,8 +29,10 @@ rule posttrim_fastqc:
 
 
 rule multiqc:
-    message: "Running MultiQC on raw data"
-    conda: "envs/001_QC.yml"
+    message: 
+        "Running MultiQC on raw data"
+    conda: 
+        "envs/001_QC.yml"
     input:
         expand("analysis/003_posttrim_qc/{sample}/{sample}_{lane}_{R}_001_trimmed_fastqc.html",
                sample=sample_mrn, lane=lane, R=read),
