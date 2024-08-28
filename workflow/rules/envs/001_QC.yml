@@ -1,0 +1,12 @@
+name: qc_env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - fastqc
+  - multiqc
+  - fastp
+
+# bash script to install the environment:
+# mamba env create -f 001_QC.yml

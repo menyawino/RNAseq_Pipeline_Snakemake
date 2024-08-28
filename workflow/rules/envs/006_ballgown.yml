@@ -1,0 +1,20 @@
+name: ballgown_env
+
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+
+dependencies:
+  - ballgown
+  - r-base
+  - r-ggplot2
+  - r-gplots
+  - r-ggfortify
+  - r-biomart
+  - r-tidyverse
+  - r-ggrepel
+  - r-devtools
+  - r-dplyr
+  - r-genefilter
+  - r-rskittlebrewer

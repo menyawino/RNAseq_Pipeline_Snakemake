@@ -1,0 +1,77 @@
+############################
+####### Loading data #######
+############################
+
+# import necessary modules to process sample data
+from scripts.sample_processing import get_sample_data
+
+# add sample file here
+samplesfile = "samples.csv"
+
+# get sample data
+samples_data = get_sample_data(samplesfile)
+
+# make lists for needed data
+sample_mrn = samples_data['sample'].unique().tolist()
+lane = samples_data['lane'].unique().tolist()
+read = samples_data['read'].unique().tolist()
+
+
+############################
+####### Configuration ######
+############################
+
+# List of directories to be created
+# the file hierarchy is as follows:
+
+# |── {date}_{project_name}
+# |── samples/
+# |    ├── raw
+# |    └── processed
+# |── workflow/
+# |    ├── rules
+# |    └── scripts
+# |── analysis/
+# |── results/
+# |── logs/
+# |── Snakefile
+# |── samples.csv
+# |── config.yaml
+
+configfile: "workflow/config_new_tuxedo.yml"
+
+if config['aligner']['tool'] == "hisat2":
+    all_targets = expand("analysis/006_count/stringtie/{sample}_{lane}/{sample}_{lane}.counts",
+                        sample=sample_mrn, lane=lane)
+elif config['aligner']['tool'] == "kallisto":
+    all_targets = "results/sleuth/differential_expression_results.tsv"
+                
+else:
+    raise ValueError("Unsupported aligner specified in config.yaml")
+
+
+
+############################
+####### Workflow ###########
+############################
+
+rule all:
+    input:
+        expand("analysis/001_QC/multiqc_raw", 
+            sample=sample_mrn, lane=lane, R=read),
+        expand("analysis/003_posttrim_qc/multiqc_raw",
+            sample=sample_mrn, lane=lane, R=read),
+        all_targets,
+        
+
+
+include: "rules/001_qc.smk"
+include: "rules/002_trimming.smk"
+include: "rules/003_posttrim_qc.smk"
+include: "rules/004_alignment.smk"
+include: "rules/005_assembly.smk"
+include: "rules/006_quant.smk"
+include: "rules/007_diffexp.smk"
+
+# delete samples_data.csv with python
+os.remove("sample_data.csv")

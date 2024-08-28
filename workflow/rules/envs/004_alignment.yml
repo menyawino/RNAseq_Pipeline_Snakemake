@@ -1,0 +1,11 @@
+name: rna-seq_alignment_env
+
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+
+dependencies:
+  - hisat2
+  - star
+  - samtools
