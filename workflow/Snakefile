@@ -31,7 +31,6 @@ if config['aligner']['tool'] == "hisat2":
                         sample=sample_mrn, lane=lane)
 elif config['aligner']['tool'] == "kallisto":
     all_targets = "results/sleuth/differential_expression_results.tsv"
-                
 else:
     raise ValueError("Unsupported aligner specified in config.yaml")
 
@@ -42,9 +41,7 @@ else:
 
 rule all:
     input:
-        expand("analysis/multiqc_raw", 
-            sample=sample_mrn, lane=lane, R=read)
-            sample=sample_mrn, lane=lane, R=read),
+        directory("analysis/multiqc_raw"),
         all_targets,
         
 
@@ -57,12 +54,9 @@ include: "rules/002_trimming.smk"
 include: "rules/003_posttrim_qc.smk"
 include: "rules/004_alignment.smk"
 include: "rules/005_assembly.smk"
+include: "rules/005_multiqc.smk"
 include: "rules/006_quant.smk"
 include: "rules/007_diffexp.smk"
 
 # delete samples_data.csv with python
 os.remove("sample_data.csv")
-
-
-# shell command to remove the "_001" in all filenames in the directory and subdirectories with keeping the extension
-# find . -type f -name "*_001*" -exec bash -c 'mv "$1" "${1//_001/}"' -- {} \;
