@@ -2,7 +2,7 @@
 
 rule posttrim_fastqc:
     message: 
-        "Running FastQC on trimmed sample {wildcards.sample}_{lane}_{R}"
+        "Running FastQC on trimmed sample {wildcards.sample}_{lane}_{wildcards.R}"
     conda: 
         "envs/001_QC.yml"
     input:

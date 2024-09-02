@@ -60,3 +60,6 @@ include: "rules/007_diffexp.smk"
 
 # delete samples_data.csv with python
 os.remove("sample_data.csv")
+
+# bash command to cut samples fastq reads by 1/8 from all samples in a directory
+# for file in *; cat $file | paste - - - - - - - - | cut -f 1,2,3,4 | tr "\t" "\n" > $file.cut; done
