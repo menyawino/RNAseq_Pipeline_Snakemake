@@ -21,22 +21,8 @@ read = samples_data['read'].unique().tolist()
 ####### Configuration ######
 ############################
 
-# List of directories to be created
-# the file hierarchy is as follows:
-
-# |── {date}_{project_name}
-# |── samples/
-# |    ├── raw
-# |    └── processed
-# |── workflow/
-# |    ├── rules
-# |    └── scripts
-# |── analysis/
-# |── results/
-# |── logs/
-# |── Snakefile
-# |── samples.csv
-# |── config.yaml
+# change this parameter to the path of the config file using
+# --configfile flag in snakemake to run different pipelines
 
 configfile: "workflow/config_new_tuxedo.yml"
 
@@ -50,20 +36,21 @@ else:
     raise ValueError("Unsupported aligner specified in config.yaml")
 
 
-
 ############################
 ####### Workflow ###########
 ############################
 
 rule all:
     input:
-        expand("analysis/001_QC/multiqc_raw", 
-            sample=sample_mrn, lane=lane, R=read),
-        expand("analysis/003_posttrim_qc/multiqc_raw",
+        expand("analysis/multiqc_raw", 
+            sample=sample_mrn, lane=lane, R=read)
             sample=sample_mrn, lane=lane, R=read),
         all_targets,
         
 
+############################
+####### Include rules ######
+############################
 
 include: "rules/001_qc.smk"
 include: "rules/002_trimming.smk"
@@ -75,3 +62,7 @@ include: "rules/007_diffexp.smk"
 
 # delete samples_data.csv with python
 os.remove("sample_data.csv")
+
+
+# shell command to remove the "_001" in all filenames in the directory and subdirectories with keeping the extension
+# find . -type f -name "*_001*" -exec bash -c 'mv "$1" "${1//_001/}"' -- {} \;

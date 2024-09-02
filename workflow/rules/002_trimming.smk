@@ -9,8 +9,8 @@ rule trimming:
         fw="samples/{sample}_{lane}_R1_001.fastq.gz",
         rv="samples/{sample}_{lane}_R2_001.fastq.gz"
     output:
-        fw="analysis/002_trimming/{sample}/{sample}_{lane}_R1_001_trimmed.fastq.gz",
-        rv="analysis/002_trimming/{sample}/{sample}_{lane}_R2_001_trimmed.fastq.gz",
+        fw="analysis/002_trimming/{sample}/{sample}_{lane}_R1_trimmed.fastq.gz",
+        rv="analysis/002_trimming/{sample}/{sample}_{lane}_R2_trimmed.fastq.gz",
         html="analysis/002_trimming/{sample}/{sample}_{lane}_fastp.html"
     threads: 
         config["threads"]

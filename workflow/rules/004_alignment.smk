@@ -4,8 +4,8 @@ rule alignment:
     message:
         "Aligning sample {wildcards.sample}_{lane} to the reference genome"
     input:
-        fq1="analysis/002_trimming/{sample}/{sample}_{lane}_R1_001_trimmed.fastq.gz",
-        fq2="analysis/002_trimming/{sample}/{sample}_{lane}_R2_001_trimmed.fastq.gz"
+        fq1="analysis/002_trimming/{sample}/{sample}_{lane}_R1_trimmed.fastq.gz",
+        fq2="analysis/002_trimming/{sample}/{sample}_{lane}_R2_trimmed.fastq.gz"
     output:
         "analysis/004_alignment/hisat2/{sample}_{lane}/{sample}_{lane}.bam"
     conda:

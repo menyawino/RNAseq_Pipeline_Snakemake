@@ -8,8 +8,8 @@ rule raw_fastqc:
     input:
         "samples/{sample}_{lane}_{R}_001.fastq.gz"
     output:
-        html="analysis/001_QC/{sample}/{sample}_{lane}_{R}_001_fastqc.html",
-        zip="analysis/001_QC/{sample}/{sample}_{lane}_{R}_001_fastqc.zip"
+        html="analysis/001_QC/{sample}/{sample}_{lane}_{R}_fastqc.html",
+        zip="analysis/001_QC/{sample}/{sample}_{lane}_{R}_fastqc.zip"
     threads: 
         config["threads"]
     params: 
