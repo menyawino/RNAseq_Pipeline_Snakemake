@@ -19,10 +19,11 @@ rule sleuth_analysis:
     message:
         "Running Sleuth for differential expression analysis"
     input:
-        expand("analysis/006_count/kallisto/{sample}_{lane}", sample=sample_mrn, lane=lane),
-        "workflow/scripts/sleuth_test.R"
+        samples=expand("analysis/006_count/kallisto/{sample}_{lane}", sample=sample_mrn, lane=lane),
+        script="workflow/scripts/sleuth.R"
     output:
-        "results/sleuth/differential_expression_results.tsv"
+        "results/sleuth/differential_expression_results.tsv",
+        "results/sleuth/sleuth_report.pdf"
     conda:
         "envs/sleuth.yml"
     log:
@@ -31,7 +32,8 @@ rule sleuth_analysis:
         "benchmarks/007_sleuth_analysis.txt"
     shell:
         """
-        Rscript {input[1]} \
-        --output {output} \
+        Rscript {input.script} \
+        --output {output[0]} \
+        --report {output[1]} \
         --log {log}
         """

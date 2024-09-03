@@ -32,8 +32,8 @@ rule kallisto_count:
     message:
         "Counting reads in sample {wildcards.sample}_{lane} with kallisto"
     input:
-        fastq1="analysis/002_trimming/{sample}/{sample}_{lane}_R1_001_trimmed.fastq.gz",
-        fastq2="analysis/002_trimming/{sample}/{sample}_{lane}_R2_001_trimmed.fastq.gz"
+        fastq1="analysis/002_trimming/{sample}/{sample}_{lane}_R1_trimmed.fastq.gz",
+        fastq2="analysis/002_trimming/{sample}/{sample}_{lane}_R2_trimmed.fastq.gz"
     output:
         directory("analysis/006_count/kallisto/{sample}_{lane}")
     conda:
@@ -48,6 +48,8 @@ rule kallisto_count:
         "benchmarks/006_count/kallisto/{sample}_{lane}.txt"
     shell:
         """
+        mkdir -p {output}
+
         kallisto quant \
         -i {params.index} \
         -o {output} \

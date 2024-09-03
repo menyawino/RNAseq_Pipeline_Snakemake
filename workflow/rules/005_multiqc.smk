@@ -1,3 +1,29 @@
+# rule multiqc:
+#     message: 
+#         "Running MultiQC on raw data"
+#     conda: 
+#         "envs/001_QC.yml"
+#     input:
+#         expand("analysis/003_posttrim_qc/{sample}/{sample}_{lane}_{R}_trimmed_fastqc.html",
+#                sample=sample_mrn, lane=lane, R=read),
+#         expand("analysis/001_QC/{sample}/{sample}_{lane}_{R}_fastqc.html",
+#                sample=sample_mrn, lane=lane, R=read),
+#         expand("analysis/004_alignment/{tool}/{sample}_{lane}/{sample}_{lane}.bam.summary",
+#                tool=tool, sample=sample_mrn, lane=lane)
+#     output:
+#         "analysis/multiqc_raw/{tool}"
+#     log:
+#         "logs/multiqc/{tool}/multiqc_raw.log"
+#     benchmark:
+#         "benchmarks/multiqc/{tool}/multiqc_raw.txt"
+#     shell:
+#         """
+#         multiqc analysis/ \
+#         -o {output} \
+#         > {log} 2>&1
+#         """
+
+
 rule multiqc:
     message: 
         "Running MultiQC on raw data"
@@ -8,17 +34,17 @@ rule multiqc:
                sample=sample_mrn, lane=lane, R=read),
         expand("analysis/001_QC/{sample}/{sample}_{lane}_{R}_fastqc.html",
                sample=sample_mrn, lane=lane, R=read),
-        expand("analysis/004_alignment/hisat2/{sample}_{lane}/{sample}_{lane}.bam.summary",
-               sample=sample_mrn, lane=lane)
+        expand("analysis/006_count/{tool}/{sample}_{lane}",
+               tool=tool, sample=sample_mrn, lane=lane)
     output:
-        directory("analysis/multiqc_raw")
+        "analysis/multiqc_raw/{tool}"
     log:
-        "logs/003_posttrim_qc/multiqc_raw.log"
+        "logs/multiqc/{tool}/multiqc_raw.log"
     benchmark:
-        "benchmarks/003_posttrim_qc/multiqc_raw.txt"
+        "benchmarks/multiqc/{tool}/multiqc_raw.txt"
     shell:
         """
-        multiqc analysis/ \
+        multiqc analysis/001_QC analysis/003_posttrim_qc logs \
         -o {output} \
         > {log} 2>&1
         """

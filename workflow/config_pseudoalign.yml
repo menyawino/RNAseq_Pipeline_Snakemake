@@ -1,4 +1,4 @@
-threads: 14
+threads: 15
 
 aligner:
   tool: "kallisto"

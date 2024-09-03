@@ -25,4 +25,6 @@ rule raw_fastqc:
         -t {threads} \
         -o {params.path} \
         > {log} 2>&1
+        mv {params.path}/{wildcards.sample}_{wildcards.lane}_{wildcards.R}_001_fastqc.html {output.html}
+        mv {params.path}/{wildcards.sample}_{wildcards.lane}_{wildcards.R}_001_fastqc.zip {output.zip}
         """

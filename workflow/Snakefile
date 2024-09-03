@@ -16,7 +16,6 @@ sample_mrn = samples_data['sample'].unique().tolist()
 lane = samples_data['lane'].unique().tolist()
 read = samples_data['read'].unique().tolist()
 
-
 ############################
 ####### Configuration ######
 ############################
@@ -25,6 +24,9 @@ read = samples_data['read'].unique().tolist()
 # --configfile flag in snakemake to run different pipelines
 
 configfile: "workflow/config_new_tuxedo.yml"
+
+tool = config['aligner']['tool']
+print("Using {} for alignment".format(tool))
 
 if config['aligner']['tool'] == "hisat2":
     all_targets = expand("analysis/006_count/stringtie/{sample}_{lane}/{sample}_{lane}.counts",
@@ -35,13 +37,14 @@ else:
     raise ValueError("Unsupported aligner specified in config.yaml")
 
 
+
 ############################
 ####### Workflow ###########
 ############################
 
 rule all:
     input:
-        directory("analysis/multiqc_raw"),
+        expand("analysis/multiqc_raw/{tool}", tool=tool),
         all_targets,
         
 
