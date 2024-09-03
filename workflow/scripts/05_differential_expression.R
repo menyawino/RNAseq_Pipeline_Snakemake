@@ -1,19 +1,19 @@
 
-# # install biocmanager
-# if (!requireNamespace("BiocManager", quietly = TRUE))
-#     install.packages("BiocManager")
+# install biocmanager
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
 
-# # install ballgown
-# BiocManager::install("ballgown")
-# BiocManager::install("biomaRt")
-# BiocManager::install("genefilter")
+# install ballgown
+BiocManager::install("ballgown")
+BiocManager::install("biomaRt")
+BiocManager::install("genefilter")
 
-# install.packages("RSkittleBrewer")
-# install.packages("devtools")
-# install.packages("gplots")
-# install.packages("ggfortify")
-# install.packages("tidyverse")
-# install.packages("ggrepel")
+install.packages("RSkittleBrewer")
+install.packages("devtools")
+install.packages("gplots")
+install.packages("ggfortify")
+install.packages("tidyverse")
+install.packages("ggrepel")
 
 
 
