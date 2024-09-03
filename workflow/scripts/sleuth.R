@@ -29,6 +29,7 @@ kal_dirs <- file.path("analysis/006_count/kallisto", sample_id)
 sample_metadata
 
 
+
 #Prepare sleuth object
 sample_metadata <- dplyr::mutate(sample_metadata, path = kal_dirs)
 
@@ -49,7 +50,12 @@ sleuth_results <- sleuth_results(so, "reduced:full", "lrt", show_all = FALSE)
 write.table(sleuth_results, file = opt$output, sep = "\t", quote = FALSE, row.names = FALSE)
 
 # Get significant results
-sleuth_significant <- dplyr::filter(sleuth_results, qval <= 0.05)
+sleuth_significant <- dplyr::filter(sleuth_results, pval <= 0.05)
+
+# Remove things that are not genes from target_id pattern ENST00000700062.1| "remove anything after the first ."
+sleuth_significant$target_id <- gsub("\\..*", "", sleuth_significant$target_id)
+head(sleuth_significant, 10)
+
 
 # write significant results to file
 write.table(sleuth_significant, file = "significant_results.txt", sep = "\t", quote = FALSE, row.names = FALSE)
@@ -57,17 +63,15 @@ write.table(sleuth_significant, file = "significant_results.txt", sep = "\t", qu
 # Generate a PDF report with visualizations
 pdf(opt$report, width=11, height=8.5)
 
-# Plot PCA
-plot_pca <- plot_pca(so, color_by = "condition")
-print(plot_pca)
+# number of significant results
+nrow(sleuth_significant)
 
+# plot p-value distribution
+hist(sleuth_results$pval, breaks = 50, main = "P-Value Distribution")
 
-# Plot for specific genes (add any genes of interest here)
-# genes_of_interest <- c("GENE1", "GENE2") # replace with actual gene names
-# for (gene in genes_of_interest) {
-#     plot_gene <- plot_bootstrap(so, gene_id = gene, units = "est_counts")
-#     print(plot_gene)
-# }
+# Plot PCA with group the points with a circle around them
+pca_data <- plot_pca(so, color_by = "condition")
+print(pca_data)
 
 # End PDF
 dev.off()
