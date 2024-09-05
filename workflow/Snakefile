@@ -63,3 +63,4 @@ include: "rules/007_diffexp.smk"
 
 # delete samples_data.csv with python
 os.remove("sample_data.csv")
+
