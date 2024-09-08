@@ -1,7 +1,16 @@
 ﻿sample,condition
-48977,h
-23011,h
-50940MF,m
-Myo96,d
-Myo182,d
-Myo169,m
+48977,healthy
+23011,healthy
+50940MF,myocardial fraction
+53311,healthy
+56091Myo,myocardial fraction
+56253Myo,myocardial fraction
+57050Myo,myocardial fraction
+58862Myo,myocardial fraction
+60773MF,myocardial fraction
+myo49610,myocardial fraction
+myo59049,myocardial fraction
+myo63988,myocardial fraction
+Myo96,myocardial fraction
+Myo182,myocardial fraction
+Myoc169,myocardial fraction

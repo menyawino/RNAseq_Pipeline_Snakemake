@@ -21,32 +21,37 @@ read = samples_data['read'].unique().tolist()
 ############################
 
 # change this parameter to the path of the config file using
-# --configfile flag in snakemake to run different pipelines
+# set automatically by the python wrapper script
 
 configfile: "workflow/config_new_tuxedo.yml"
 
 tool = config['aligner']['tool']
-print("Using {} for alignment".format(tool))
+count_tool = config['counting']['tool']
 
-if config['aligner']['tool'] == "hisat2":
+# print("Using {} for alignment".format(tool))
+# print("Using {} for counting".format(count_tool))
+
+if tool == "hisat2":
     all_targets = expand("analysis/006_count/stringtie/{sample}_{lane}/{sample}_{lane}.counts",
                         sample=sample_mrn, lane=lane)
-elif config['aligner']['tool'] == "kallisto":
+elif tool == "kallisto":
     all_targets = "results/sleuth/differential_expression_results.tsv"
 else:
     raise ValueError("Unsupported aligner specified in config.yaml")
 
 
-
 ############################
-####### Workflow ###########
+######### Workflow #########
 ############################
 
 rule all:
     input:
+        # lambda wildcards: "analysis/multiqc_raw/{}".format(tool),
         expand("analysis/multiqc_raw/{tool}", tool=tool),
         all_targets,
         
+
+# "analysis/multiqc_raw/{tool}"
 
 ############################
 ####### Include rules ######

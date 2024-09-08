@@ -35,7 +35,7 @@ rule multiqc:
         expand("analysis/001_QC/{sample}/{sample}_{lane}_{R}_fastqc.html",
                sample=sample_mrn, lane=lane, R=read),
         expand("analysis/006_count/{tool}/{sample}_{lane}",
-               tool=tool, sample=sample_mrn, lane=lane)
+               tool=count_tool, sample=sample_mrn, lane=lane)
     output:
         "analysis/multiqc_raw/{tool}"
     log:

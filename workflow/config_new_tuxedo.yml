@@ -5,3 +5,6 @@ aligner:
   # add full paths here
   index_hisat2: "/mnt/d/omar_wsl/rnaseq_pipeline_snakemake/ref/genome/hisat2_index/grch38/genome"
   index_kallisto: "/mnt/d/omar_wsl/rnaseq_pipeline_snakemake/ref/genome/kallisto_index/transcriptome.idx"
+
+counting:
+  tool: "stringtie"

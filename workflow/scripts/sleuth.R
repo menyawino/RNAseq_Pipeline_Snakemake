@@ -17,7 +17,7 @@ opt <- parse_args(OptionParser(option_list = option_list))
 sample_id <- dir(file.path("analysis/006_count/kallisto/"))
 
 # Load metadata
-sample_metadata <- read.csv("samples_r_metadata.csv")
+sample_metadata <- read.csv("samples.csv")
 
 # Replace sample with sample_id in metadata to match sample and lane names after checking that the order of sample_id is the same as sample in the metadata by checking the first chunk before the _ in the sample_id
 sample_ids <- gsub("_.*", "", sample_id)
@@ -52,7 +52,7 @@ write.table(sleuth_results, file = opt$output, sep = "\t", quote = FALSE, row.na
 # Get significant results
 sleuth_significant <- dplyr::filter(sleuth_results, pval <= 0.05)
 
-# Remove things that are not genes from target_id pattern ENST00000700062.1| "remove anything after the first ."
+# Remove things that are not genes from target_id pattern
 sleuth_significant$target_id <- gsub("\\..*", "", sleuth_significant$target_id)
 head(sleuth_significant, 10)
 
