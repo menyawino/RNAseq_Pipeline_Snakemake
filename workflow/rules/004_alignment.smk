@@ -1,6 +1,6 @@
 # A rule to align the trimmed reads to the reference genome using STAR
 
-rule alignment:
+rule hisat2_alignment:
     message:
         "Aligning sample {wildcards.sample}_{lane} to the reference genome"
     input:
