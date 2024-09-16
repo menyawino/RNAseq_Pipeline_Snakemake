@@ -42,12 +42,17 @@ def run_snakemake(configfile, verbose=False, extra_args=[]):
 # run snakemake plan to preview the pipeline
 def run_snakemake_plan():
     """Preview the Snakemake plan before running the pipeline."""
-    os.system("snakemake -s /mnt/d/omar_wsl/rnaseq_pipeline_snakemake/workflow/Snakefile \
-            --use-conda --dag --configfile workflow/config_new_tuxedo.yml --quiet \
-            | dot -Tpng > results/dag.png")
-    os.system("snakemake -s /mnt/d/omar_wsl/rnaseq_pipeline_snakemake/workflow/Snakefile \
-            --use-conda --rulegraph --configfile workflow/config_new_tuxedo.yml --quiet \
-            | dot -Tpng > results/rulegraph.png")
+    
+    # Find the Snakefile relative to the package path
+    thisdir = os.path.dirname(__file__)
+    snakefile = os.path.join(thisdir, 'workflow/Snakefile')
+    
+    os.system("snakemake -s " + snakefile + " --use-conda --dag \
+        --configfile workflow/config_new_tuxedo.yml --quiet \
+        | dot -Tpng > results/dag.png")
+    os.system("snakemake -s " + snakefile + " --use-conda --rulegraph \
+        --configfile workflow/config_new_tuxedo.yml --quiet \
+        | dot -Tpng > results/rulegraph.png")
 
 
 # build folders for the pipeline: analysis, benchmarks, results, logs if they don't exist
@@ -71,8 +76,8 @@ def cli():
 @click.argument('snakemake_args', nargs=-1)
 def run(configfile, snakemake_args, verbose):
     """Execute workflow (using Snakemake underneath)."""
-    run_snakemake_plan()
     build_folders()
+    run_snakemake_plan()
     run_snakemake(configfile, verbose=verbose,
                   extra_args=snakemake_args)
 
