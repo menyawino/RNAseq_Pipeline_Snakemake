@@ -5,6 +5,8 @@ import os
 import subprocess
 import click
 
+
+# run snakemake with the specified options and configuration
 def run_snakemake(configfile, verbose=False, extra_args=[]):
     """Run Snakemake with the specified options and configuration."""
 
@@ -37,6 +39,7 @@ def run_snakemake(configfile, verbose=False, extra_args=[]):
         return 1 
 
 
+# run snakemake plan to preview the pipeline
 def run_snakemake_plan():
     """Preview the Snakemake plan before running the pipeline."""
     os.system("snakemake -s /mnt/d/omar_wsl/rnaseq_pipeline_snakemake/workflow/Snakefile \
@@ -47,10 +50,20 @@ def run_snakemake_plan():
             | dot -Tpng > results/rulegraph.png")
 
 
+# build folders for the pipeline: analysis, benchmarks, results, logs if they don't exist
+def build_folders():
+    """Build folders for the pipeline if they don't exist."""
+    folders = ['analysis', 'benchmarks', 'results', 'logs']
+    for folder in folders:
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+    
+
 @click.group()
 def cli():
     """Define the CLI group."""
     pass
+
 
 @click.command(context_settings={"ignore_unknown_options": True})
 @click.argument('configfile')
@@ -59,43 +72,12 @@ def cli():
 def run(configfile, snakemake_args, verbose):
     """Execute workflow (using Snakemake underneath)."""
     run_snakemake_plan()
+    build_folders()
     run_snakemake(configfile, verbose=verbose,
                   extra_args=snakemake_args)
 
 
-
-# @click.command()
-# @click.argument('configfile')
-# def check(configfile):
-#     """Check configuration."""
-#     run_snakemake(configfile, extra_args=['check'])
-
-# @click.command()
-# @click.argument('configfile')
-# def showconf(configfile):
-#     """Show full configuration across project config files."""
-#     run_snakemake(configfile, extra_args=['showconf'])
-
-# @click.command()
-# def info():
-#     """Provide basic install/config file info."""
-#     try:
-#         from version import version 
-#     except ImportError:
-#         version = "unknown"
-#     print(f"""
-# This is your package version v{version}
-
-# Package install path: {os.path.dirname(__file__)}
-# Snakemake Snakefile: 'workflow/Snakefile'
-# """)
-
-
-# Register commands with the Click CLI
 cli.add_command(run)
-# cli.add_command(check)
-# cli.add_command(showconf)
-# cli.add_command(info)
 
 
 # ANSI color codes

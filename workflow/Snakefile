@@ -28,8 +28,6 @@ configfile: "workflow/config_new_tuxedo.yml"
 tool = config['aligner']['tool']
 count_tool = config['counting']['tool']
 
-# print("Using {} for alignment".format(tool))
-# print("Using {} for counting".format(count_tool))
 
 if tool == "hisat2":
     all_targets = expand("analysis/006_count/stringtie/{sample}_{lane}/{sample}_{lane}.counts",
@@ -46,12 +44,12 @@ else:
 
 rule all:
     input:
-        # lambda wildcards: "analysis/multiqc_raw/{}".format(tool),
         expand("analysis/multiqc_raw/{tool}", tool=tool),
+        
         all_targets,
         
 
-# "analysis/multiqc_raw/{tool}"
+
 
 ############################
 ####### Include rules ######

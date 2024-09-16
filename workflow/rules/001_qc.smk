@@ -21,6 +21,7 @@ rule raw_fastqc:
     shell:
         """
         mkdir -p {params.path}
+        
         fastqc {input} \
         -t {threads} \
         -o {params.path} \

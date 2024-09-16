@@ -13,12 +13,13 @@
         
         
     - **workflow (needs to be added manually)**
-        
+
+    - **ref (needs to be added manually)**
         
     
     📝 Metadata
     
-    📝 Snakefile
+    📝 cirna.py
     
     📝 README.md
 
