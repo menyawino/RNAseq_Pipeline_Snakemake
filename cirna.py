@@ -5,7 +5,14 @@ import os
 import subprocess
 import click
 
-
+# build folders for the pipeline: analysis, benchmarks, results, logs if they don't exist
+def build_folders():
+    """Build folders for the pipeline if they don't exist."""
+    folders = ['analysis', 'benchmarks', 'results', 'logs']
+    for folder in folders:
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+            
 # run snakemake with the specified options and configuration
 def run_snakemake(configfile, verbose=False, extra_args=[]):
     """Run Snakemake with the specified options and configuration."""
@@ -15,7 +22,7 @@ def run_snakemake(configfile, verbose=False, extra_args=[]):
     snakefile = os.path.join(thisdir, 'workflow/Snakefile')
 
     # Basic Snakemake command
-    cmd = ["snakemake", "-s", snakefile, "--use-conda"]
+    cmd = ["snakemake", "-s", snakefile, "--use-conda", "-k"]
 
     # Add additional Snakemake arguments
     cmd += list(extra_args)
@@ -28,6 +35,7 @@ def run_snakemake(configfile, verbose=False, extra_args=[]):
     if verbose:
         print('Command executed:', ' '.join(cmd))
 
+    
     # Run Snakemake
     try:
         subprocess.check_call(cmd)
@@ -55,13 +63,16 @@ def run_snakemake_plan():
         | dot -Tpng > results/rulegraph.png")
 
 
-# build folders for the pipeline: analysis, benchmarks, results, logs if they don't exist
-def build_folders():
-    """Build folders for the pipeline if they don't exist."""
-    folders = ['analysis', 'benchmarks', 'results', 'logs']
-    for folder in folders:
-        if not os.path.exists(folder):
-            os.makedirs(folder)
+# generate snakemake report for the pipeline
+def get_snakemake_report():
+    """Generate a Snakemake report for the pipeline."""
+    
+    # Find the Snakefile relative to the package path
+    thisdir = os.path.dirname(__file__)
+    snakefile = os.path.join(thisdir, 'workflow/Snakefile')
+    
+    os.system("snakemake -s " + snakefile + " --use-conda --report \
+        --configfile workflow/config_new_tuxedo.yml")
     
 
 @click.group()
@@ -80,6 +91,7 @@ def run(configfile, snakemake_args, verbose):
     run_snakemake_plan()
     run_snakemake(configfile, verbose=verbose,
                   extra_args=snakemake_args)
+    get_snakemake_report()
 
 
 cli.add_command(run)

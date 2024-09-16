@@ -1,10 +1,10 @@
-threads: 15
+threads: 6
 
 aligner:
   tool: "kallisto"
   # add full paths here
-  index_hisat2: "/mnt/d/omar_wsl/rnaseq_pipeline_snakemake/ref/genome/hisat2_index/grch38/genome"
-  index_kallisto: "/mnt/d/omar_wsl/rnaseq_pipeline_snakemake/ref/genome/kallisto_index/transcriptome.idx"
+  index_hisat2: "ref/genome/hisat2_index/grch38/genome"
+  index_kallisto: "ref/genome/kallisto_index/transcriptome.idx"
 
 counting:
   tool: "kallisto"

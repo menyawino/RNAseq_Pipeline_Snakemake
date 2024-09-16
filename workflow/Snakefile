@@ -44,12 +44,9 @@ else:
 
 rule all:
     input:
-        expand("analysis/multiqc_raw/{tool}", tool=tool),
-        
+        expand("analysis/multiqc_raw/{tool}/multiqc_report.html", tool=tool),
         all_targets,
         
-
-
 
 ############################
 ####### Include rules ######
