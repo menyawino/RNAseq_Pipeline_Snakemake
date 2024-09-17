@@ -6,4 +6,4 @@ channels:
   - defaults
 
 dependencies:
-  - kallisto
+  - kallisto=0.48.0

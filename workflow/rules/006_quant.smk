@@ -41,18 +41,20 @@ rule kallisto_count:
     threads:
         config["threads"]
     params:
-        index=config["aligner"]["index_kallisto"]
+        index=config["aligner"]["index_kallisto"],
+        # output dir with sample and lane
+        output=lambda wildcards: "analysis/006_count/kallisto/{}".format(wildcards.sample)
     log:
-        "logs/006_count/kallisto/{sample}_{lane}.log"
+        "logs/006_count/kallisto/{sample}/{sample}_{lane}.log"
     benchmark:
-        "benchmarks/006_count/kallisto/{sample}_{lane}.txt"
+        "benchmarks/006_count/kallisto/{sample}/{sample}_{lane}.txt"
     shell:
         """
         mkdir -p {output}
 
         kallisto quant \
         -i {params.index} \
-        -o {output} \
+        -o {params.output} \
         -t {threads} \
         -b 100 \
         {input.fastq1} {input.fastq2} \

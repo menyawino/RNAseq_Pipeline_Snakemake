@@ -20,6 +20,9 @@ rule trimming:
         "benchmarks/002_trimming/{sample}/{sample}_{lane}.txt"
     shell:
         """
+        echo output: {output}
+        echo input: {input}
+        
         fastp \
         -i {input.fw} \
         -I {input.rv} \

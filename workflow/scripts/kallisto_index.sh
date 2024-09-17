@@ -1,0 +1,1 @@
+kallisto index -i transcriptome.idx gencode.v44.transcripts.fa.gz

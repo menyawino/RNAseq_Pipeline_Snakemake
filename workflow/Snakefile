@@ -11,10 +11,17 @@ samplesfile = "samples.csv"
 # get sample data
 samples_data = get_sample_data(samplesfile)
 
+
 # make lists for needed data
 sample_mrn = samples_data['sample'].unique().tolist()
 lane = samples_data['lane'].unique().tolist()
 read = samples_data['read'].unique().tolist()
+
+wildcard_constraints:
+    sample_mrn= '|'.join([re.escape(x) for x in sample_mrn]),
+    lane= '|'.join([re.escape(x) for x in lane]),
+    read= '|'.join([re.escape(x) for x in read]),
+
 
 ############################
 ####### Configuration ######
@@ -44,7 +51,7 @@ else:
 
 rule all:
     input:
-        expand("analysis/multiqc_raw/{tool}/multiqc_report.html", tool=tool),
+        expand("analysis/007_multiqc/{tool}/multiqc_report.html", tool=tool),
         all_targets,
         
 
@@ -57,9 +64,9 @@ include: "rules/002_trimming.smk"
 include: "rules/003_posttrim_qc.smk"
 include: "rules/004_alignment.smk"
 include: "rules/005_assembly.smk"
-include: "rules/005_multiqc.smk"
 include: "rules/006_quant.smk"
 include: "rules/007_diffexp.smk"
+include: "rules/008_multiqc.smk"
 
 # delete samples_data.csv with python
 os.remove("sample_data.csv")

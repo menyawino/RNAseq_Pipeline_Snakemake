@@ -45,7 +45,7 @@ rule sort_bam:
     conda: 
         "envs/004_alignment.yml"
     threads: 
-        8
+        config["threads"]
     params: 
         path=lambda wildcards: "results/{}".format(wildcards.sample)
     log:

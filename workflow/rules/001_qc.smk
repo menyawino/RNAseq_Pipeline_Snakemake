@@ -11,7 +11,7 @@ rule raw_fastqc:
         html="analysis/001_QC/{sample}/{sample}_{lane}_{R}_fastqc.html",
         zip="analysis/001_QC/{sample}/{sample}_{lane}_{R}_fastqc.zip"
     threads: 
-        config["threads"]
+        config["np_threads"]
     params: 
         path=lambda wildcards: "analysis/001_QC/{}".format(wildcards.sample)
     log:
