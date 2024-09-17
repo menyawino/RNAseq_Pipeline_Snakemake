@@ -43,15 +43,15 @@ rule kallisto_count:
     params:
         index=config["aligner"]["index_kallisto"],
         # output dir with sample and lane
-        output=lambda wildcards: "analysis/006_count/kallisto/{}".format(wildcards.sample)
+        output=lambda wildcards: "analysis/006_count/kallisto/{}_{}".format(wildcards.sample, wildcards.lane)
     log:
         "logs/006_count/kallisto/{sample}/{sample}_{lane}.log"
     benchmark:
         "benchmarks/006_count/kallisto/{sample}/{sample}_{lane}.txt"
     shell:
         """
-        mkdir -p {output}
-
+        mkdir -p {params.output}
+        
         kallisto quant \
         -i {params.index} \
         -o {params.output} \
