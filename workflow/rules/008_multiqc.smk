@@ -23,5 +23,6 @@ rule multiqc:
         """
         multiqc analysis/001_QC analysis/003_posttrim_qc logs \
         -o {params.output} \
+        -f \
         > {log} 2>&1
         """

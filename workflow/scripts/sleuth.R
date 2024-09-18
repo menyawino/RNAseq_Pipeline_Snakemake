@@ -76,5 +76,3 @@ print(pca_data)
 # End PDF
 dev.off()
 
-# Reset output
-sink()

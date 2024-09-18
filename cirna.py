@@ -5,8 +5,8 @@ import os
 import subprocess
 import click
 import time
-import psutil  # For CPU, RAM, and disk usage
-import shutil  # For disk space
+import psutil
+import shutil
 from datetime import timedelta
 
 # build folders for the pipeline: analysis, benchmarks, results, logs if they don't exist
@@ -34,8 +34,9 @@ def track_resources(start_time, net_start, verbose=False):
     bytes_sent = (net_end.bytes_sent - net_start.bytes_sent) / (1024 ** 2)  # Convert to MB
     bytes_recv = (net_end.bytes_recv - net_start.bytes_recv) / (1024 ** 2)  # Convert to MB
 
-    # Get the size of the 'results' folder
-    output_folder_size = get_folder_size('analysis') / (1024 ** 2) + get_folder_size('results') / (1024 ** 2)  # Convert to MB
+    # Get the size of the files in Gb
+    output_folder_size = get_folder_size('results') / (1024 ** 3) + get_folder_size('analysis') / (1024 ** 3)
+
 
     # Print resource usage stats
     print(f"""
@@ -48,7 +49,7 @@ def track_resources(start_time, net_start, verbose=False):
     |   Memory Usage:               {memory_usage:.2f} GB / {total_memory:.2f} GB           |
     |   Network Sent:               {bytes_sent:.2f} MB                       |
     |   Network Received:           {bytes_recv:.2f} MB                       |
-    |   Output Files Size:         {output_folder_size:.2f} MB                   |
+    |   Output Files Size:         {output_folder_size:.2f} GB                       |
     |_____________________________________________________________|
     """)
     
@@ -89,9 +90,13 @@ def run_snakemake(configfile, verbose=False, extra_args=[]):
     start_time = time.time()
     net_start = psutil.net_io_counters()  # Capture network usage at start
 
+    # run snakemake plan to preview the pipeline
     run_snakemake_plan(configfile)
     
-    # Run Snakemake
+    # generate snakemake report for the pipeline
+    get_snakemake_report(configfile)
+    
+    # run Snakemake
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as e:
@@ -102,7 +107,7 @@ def run_snakemake(configfile, verbose=False, extra_args=[]):
         return 1 
     
     # display resource usage
-    track_resources(start_time, net_start, verbose=verbose)
+    
 
 
 # run snakemake plan to preview the pipeline
@@ -122,15 +127,15 @@ def run_snakemake_plan(configfile):
 
 
 # generate snakemake report for the pipeline
-def get_snakemake_report():
+def get_snakemake_report(configfile):
     """Generate a Snakemake report for the pipeline."""
     
     # Find the Snakefile relative to the package path
     thisdir = os.path.dirname(__file__)
     snakefile = os.path.join(thisdir, 'workflow/Snakefile')
     
-    os.system("snakemake -s " + snakefile + " --use-conda --report \
-        --configfile workflow/config_new_tuxedo.yml")
+    os.system("snakemake -s " + snakefile + " --use-conda --report " + 
+              "--configfile " + configfile + " --quiet")
     
 
 @click.group()
@@ -147,9 +152,14 @@ def run(configfile, snakemake_args, verbose):
     """Execute workflow (using Snakemake underneath)."""
     build_folders()
     
+    start_time = time.time()
+    net_start = psutil.net_io_counters()
+    
     run_snakemake(configfile, verbose=verbose,
                   extra_args=snakemake_args)
-    get_snakemake_report()
+    
+    track_resources(start_time, net_start, verbose=verbose)
+    
 
 
 cli.add_command(run)
