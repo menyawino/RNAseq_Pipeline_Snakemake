@@ -36,5 +36,4 @@ rule sleuth_analysis:
         --output {output[0]} \
         --report {output[1]} \
         --log {log}
-        > {log}
         """
