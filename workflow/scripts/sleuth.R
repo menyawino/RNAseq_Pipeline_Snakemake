@@ -21,6 +21,10 @@ sample_metadata <- read.csv("samples.csv")
 
 # Replace sample with sample_id in metadata to match sample and lane names after checking that the order of sample_id is the same as sample in the metadata by checking the first chunk before the _ in the sample_id
 sample_ids <- gsub("_.*", "", sample_id)
+
+sample_ids <- unique(sample_ids)
+
+
 sample_metadata$sample <- sample_metadata$sample[match(sample_ids, sample_metadata$sample)]
 
 kal_dirs <- file.path("analysis/006_count/kallisto", sample_id)
