@@ -53,6 +53,23 @@ def track_resources(start_time, net_start, verbose=False):
     |_____________________________________________________________|
     """)
     
+    # output the resource usage to a file with date and time before runtime
+    with open('benchmarks/resource_usage.txt', 'w') as f:
+        f.write(f"""
+     _____________________________________________________________
+    |                                                             |
+    |                 Pipeline Resource Usage Report              |
+    |_____________________________________________________________|
+    |   Date and Time:              {time.ctime()}                |
+    |   Runtime:                    {str(timedelta(seconds=elapsed_time))}                |
+    |   CPU Usage:                  {cpu_usage}%                          |
+    |   Memory Usage:               {memory_usage:.2f} GB / {total_memory:.2f} GB           |
+    |   Network Sent:               {bytes_sent:.2f} MB                       |
+    |   Network Received:           {bytes_recv:.2f} MB                       |
+    |   Output Files Size:         {output_folder_size:.2f} GB                       |
+    |_____________________________________________________________|
+    """)
+    
 
 #  get the size of a folder in bytes 
 def get_folder_size(folder):
@@ -93,8 +110,6 @@ def run_snakemake(configfile, verbose=False, extra_args=[]):
     # run snakemake plan to preview the pipeline
     run_snakemake_plan(configfile)
     
-    # generate snakemake report for the pipeline
-    get_snakemake_report(configfile)
     
     # run Snakemake
     try:
@@ -106,6 +121,9 @@ def run_snakemake(configfile, verbose=False, extra_args=[]):
         print(f'Snakemake not found: {e}', file=sys.stderr)
         return 1 
     
+    # generate snakemake report for the pipeline
+    get_snakemake_report(configfile)
+
     # display resource usage
     
 

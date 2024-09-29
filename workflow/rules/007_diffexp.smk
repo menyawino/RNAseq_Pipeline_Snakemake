@@ -1,3 +1,5 @@
+# A rule to run Ballgown for differential expression analysis
+
 rule ballgown_diffexp:
     message:
         "Running Ballgown for differential expression analysis"
@@ -10,10 +12,12 @@ rule ballgown_diffexp:
     log:
         "logs/diffexp/{sample}_{lane}.log"
     benchmark:
-        "benchmarks/diffexp/{sample}_{lane}.txt"
+        repeat("benchmarks/diffexp/{sample}_{lane}.txt", config["benchmark"])
     script:
         "scripts/ballgown.R"
 
+
+# A rule to run Sleuth for differential expression analysis
 
 rule sleuth_analysis:
     message:
@@ -29,7 +33,7 @@ rule sleuth_analysis:
     log:
         "logs/007_sleuth_analysis.log"
     benchmark:
-        "benchmarks/007_sleuth_analysis.txt"
+        repeat("benchmarks/007_sleuth_analysis.txt", config["benchmark"])
     shell:
         """
         Rscript {input.script} \

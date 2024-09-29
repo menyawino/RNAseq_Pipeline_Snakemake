@@ -18,7 +18,8 @@ rule hisat2_alignment:
     log:
         "logs/004_alignment/alignment/{sample}_{lane}_alignment.log"
     benchmark:
-        "benchmarks/004_alignment/alignment/{sample}_{lane}_alignment.txt"
+        # "benchmarks/004_alignment/alignment/{sample}_{lane}_alignment.txt"
+        repeat("benchmarks/004_alignment/alignment/{sample}_{lane}_alignment.txt", 20)
     shell:
         """
         hisat2 \
@@ -51,7 +52,7 @@ rule sort_bam:
     log:
         "logs/004_alignment/sort/{sample}_{lane}_sort.log"
     benchmark:
-        "benchmarks/004_alignment/sort/{sample}_{lane}_sort.txt"
+        repeat("benchmarks/004_alignment/sort/{sample}_{lane}_sort.txt", config["benchmark"])
     shell:
         """
         samtools sort \

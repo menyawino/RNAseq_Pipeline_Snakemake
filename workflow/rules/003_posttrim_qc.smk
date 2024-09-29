@@ -17,7 +17,7 @@ rule posttrim_fastqc:
     log:
         "logs/003_posttrim_qc/{sample}/{sample}_{lane}_{R}.log"
     benchmark:
-        "benchmarks/003_posttrim_qc/{sample}/{sample}_{lane}_{R}.txt"
+        repeat("benchmarks/003_posttrim_qc/{sample}/{sample}_{lane}_{R}.txt", config["benchmark"])
     shell:
         """
         mkdir -p {params.path}

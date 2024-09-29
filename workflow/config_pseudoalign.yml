@@ -1,5 +1,7 @@
 threads: 4
 
+benchmark: 1
+
 aligner:
   tool: "kallisto"
   # add full paths here

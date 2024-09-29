@@ -17,7 +17,7 @@ rule trimming:
     log:
         "logs/002_trimming/{sample}/{sample}_{lane}.log"
     benchmark:
-        "benchmarks/002_trimming/{sample}/{sample}_{lane}.txt"
+        repeat("benchmarks/002_trimming/{sample}/{sample}_{lane}.txt", config["benchmark"])
     shell:
         """
         echo output: {output}

@@ -1,5 +1,8 @@
 np_threads: 2
+
 threads: 4
+
+benchmark: 1
 
 aligner:
   tool: "hisat2"

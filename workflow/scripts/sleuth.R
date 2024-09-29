@@ -17,28 +17,27 @@ opt <- parse_args(OptionParser(option_list = option_list))
 sample_id <- dir(file.path("analysis/006_count/kallisto/"))
 
 # Load metadata
-sample_metadata <- read.csv("samples.csv")
+sample_metadata <- read.csv("samples_r.csv")
 
 # Replace sample with sample_id in metadata to match sample and lane names after checking that the order of sample_id is the same as sample in the metadata by checking the first chunk before the _ in the sample_id
 sample_ids <- gsub("_.*", "", sample_id)
 
-sample_ids <- unique(sample_ids)
+# sample_ids <- unique(sample_ids)
 
-
-sample_metadata$sample <- sample_metadata$sample[match(sample_ids, sample_metadata$sample)]
+# match sample_id with sample in metadata
+sample_metadata$sample <- sample_metadata$sample[match(sample_id, sample_metadata$sample)]
 
 kal_dirs <- file.path("analysis/006_count/kallisto", sample_id)
 
 # Add path to metadata
+sample_metadata <- dplyr::mutate(sample_metadata, path = kal_dirs)
+
 sample_metadata
 
 
-
 #Prepare sleuth object
-sample_metadata <- dplyr::mutate(sample_metadata, path = kal_dirs)
-
-
 so <- sleuth_prep(sample_metadata, ~condition)
+
 
 # Fit models
 so <- sleuth_fit(so, ~condition, "full")
@@ -49,6 +48,8 @@ so <- sleuth_lrt(so, "reduced", "full")
 
 # Get results
 sleuth_results <- sleuth_results(so, "reduced:full", "lrt", show_all = FALSE)
+
+write.table(sleuth_results, file = "sleuth_results.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
 # Write results to file
 write.table(sleuth_results, file = opt$output, sep = "\t", quote = FALSE, row.names = FALSE)
@@ -76,6 +77,9 @@ hist(sleuth_results$pval, breaks = 50, main = "P-Value Distribution")
 # Plot PCA with group the points with a circle around them
 pca_data <- plot_pca(so, color_by = "condition")
 print(pca_data)
+
+# save the plot to a file
+ggsave("pca_plot.pdf", pca_data)
 
 # End PDF
 dev.off()

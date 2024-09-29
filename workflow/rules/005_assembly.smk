@@ -14,7 +14,7 @@ rule stringtie_assembly:
     log:
         "logs/005_stringtie/assembly/{sample}_{lane}.log"
     benchmark:
-        "benchmarks/005_stringtie/{sample}/{sample}_{lane}.txt"
+        repeat("benchmarks/005_stringtie/{sample}/{sample}_{lane}.txt", config["benchmark"])
     shell:
         """
         stringtie \
@@ -23,6 +23,8 @@ rule stringtie_assembly:
         -p {threads} \
         2> {log}
         """
+
+# A rule to merge the assembled transcripts
 
 rule stringtie_merge:
     message: 
@@ -38,7 +40,7 @@ rule stringtie_merge:
     log:
         "logs/005_stringtie/merge/merged.log"
     benchmark:
-        "benchmarks/005_stringtie/merged.txt"
+        repeat("benchmarks/005_stringtie/merged.txt", config["benchmark"])
     shell:
         """
         stringtie \

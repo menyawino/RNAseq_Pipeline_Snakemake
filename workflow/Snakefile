@@ -37,7 +37,8 @@ count_tool = config['counting']['tool']
 
 
 if tool == "hisat2":
-    all_targets = expand("analysis/006_count/stringtie/{sample}_{lane}/{sample}_{lane}.counts",
+    # all_targets = expand("analysis/006_count/stringtie/{sample}_{lane}/{sample}_{lane}.counts",
+    all_targets = expand("analysis/006_count/stringtie/{sample}_{lane}",
                         sample=sample_mrn, lane=lane)
 elif tool == "kallisto":
     all_targets = "results/sleuth/differential_expression_results.tsv"

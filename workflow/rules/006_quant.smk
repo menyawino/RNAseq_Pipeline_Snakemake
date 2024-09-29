@@ -1,3 +1,5 @@
+# A rule to run kallisto for read counting
+
 rule stringtie_count:
     message: 
         "Counting reads in sample {wildcards.sample}_{lane} with stringtie"
@@ -6,7 +8,9 @@ rule stringtie_count:
         bam=expand("analysis/004_alignment/hisat2/{sample}_{lane}/{sample}_{lane}_Aligned.sortedByCoord.out.bam",
             sample=sample_mrn, lane=lane)
     output:
-        "analysis/006_count/stringtie/{sample}_{lane}/{sample}_{lane}.counts"
+        # "analysis/006_count/stringtie/{sample}_{lane}/{sample}_{lane}.counts"
+        "analysis/006_count/stringtie/{sample}_{lane}"
+
     conda: 
         "envs/005_stringtie.yml"
     threads: 
@@ -14,7 +18,7 @@ rule stringtie_count:
     log:
         "logs/006_count/stringtie/{sample}_{lane}.log"
     benchmark:
-        "benchmarks/006_count/stringtie/{sample}/{sample}_{lane}.txt"
+        repeat("benchmarks/006_count/stringtie/{sample}/{sample}_{lane}.txt", config["benchmark"])
     shell:
         """
         stringtie \
@@ -27,6 +31,8 @@ rule stringtie_count:
         2> {log}
         """
 
+
+# A rule to run kallisto for read counting
 
 rule kallisto_count:
     message:
@@ -47,7 +53,7 @@ rule kallisto_count:
     log:
         "logs/006_count/kallisto/{sample}/{sample}_{lane}.log"
     benchmark:
-        "benchmarks/006_count/kallisto/{sample}/{sample}_{lane}.txt"
+        repeat("benchmarks/006_count/kallisto/{sample}/{sample}_{lane}.txt", config["benchmark"])
     shell:
         """
         mkdir -p {params.output}

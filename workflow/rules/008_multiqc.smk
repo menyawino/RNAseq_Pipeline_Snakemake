@@ -1,3 +1,5 @@
+# A rule to run MultiQC on raw data
+
 rule multiqc:
     message: 
         "Running MultiQC on raw data"
@@ -18,7 +20,7 @@ rule multiqc:
     log:
         "logs/multiqc/{tool}/multiqc_raw.log"
     benchmark:
-        "benchmarks/multiqc/{tool}/multiqc_raw.txt"
+        repeat("benchmarks/multiqc/{tool}/multiqc_raw.txt", config["benchmark"])
     shell:
         """
         multiqc analysis/001_QC analysis/003_posttrim_qc logs \

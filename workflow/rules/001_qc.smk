@@ -17,7 +17,8 @@ rule raw_fastqc:
     log:
         "logs/001_QC/{sample}/{sample}_{lane}_{R}.log"
     benchmark:
-        "benchmarks/001_QC/{sample}/{sample}_{lane}_{R}.txt"
+        # "benchmarks/001_QC/{sample}/{sample}_{lane}_{R}.txt"
+        repeat("benchmarks/001_QC/{sample}/{sample}_{lane}_{R}.txt", config["benchmark"])
     shell:
         """
         mkdir -p {params.path}
