@@ -47,7 +47,7 @@ so <- sleuth_fit(so, ~1, "reduced")
 so <- sleuth_lrt(so, "reduced", "full")
 
 # Get results
-sleuth_results <- sleuth_results(so, "reduced:full", "lrt", show_all = FALSE)
+sleuth_results <- sleuth_results(so, "reduced:full", "wt", show_all = FALSE)
 
 write.table(sleuth_results, file = "sleuth_results.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
