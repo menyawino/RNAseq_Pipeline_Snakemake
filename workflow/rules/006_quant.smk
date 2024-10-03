@@ -2,23 +2,23 @@
 
 rule stringtie_count:
     message: 
-        "Counting reads in sample {wildcards.sample}_{lane} with stringtie"
+        "Counting reads in sample {wildcards.sample} with stringtie"
     input:
         gtf="analysis/005_assembly/merged.gtf",
-        bam=expand("analysis/004_alignment/hisat2/{sample}_{lane}/{sample}_{lane}_Aligned.sortedByCoord.out.bam",
-            sample=sample_mrn, lane=lane)
+        bam=expand("analysis/004_alignment/hisat2/{sample}/{sample}_Aligned.sortedByCoord.out.bam",
+            sample=sample_mrn)
     output:
-        # "analysis/006_count/stringtie/{sample}_{lane}/{sample}_{lane}.counts"
-        "analysis/006_count/stringtie/{sample}_{lane}"
+        # "analysis/006_count/stringtie/{sample}/{sample}.counts"
+        "analysis/006_count/stringtie/{sample}"
 
     conda: 
         "envs/005_stringtie.yml"
     threads: 
         config["threads"]
     log:
-        "logs/006_count/stringtie/{sample}_{lane}.log"
+        "logs/006_count/stringtie/{sample}.log"
     benchmark:
-        repeat("benchmarks/006_count/stringtie/{sample}/{sample}_{lane}.txt", config["benchmark"])
+        repeat("benchmarks/006_count/stringtie/{sample}/{sample}.txt", config["benchmark"])
     shell:
         """
         stringtie \
@@ -36,24 +36,24 @@ rule stringtie_count:
 
 rule kallisto_count:
     message:
-        "Counting reads in sample {wildcards.sample}_{lane} with kallisto"
+        "Counting reads in sample {wildcards.sample} with kallisto"
     input:
-        fastq1="analysis/002_trimming/{sample}/{sample}_{lane}_R1_trimmed.fastq.gz",
-        fastq2="analysis/002_trimming/{sample}/{sample}_{lane}_R2_trimmed.fastq.gz"
+        fastq1="analysis/002_trimming/{sample}/{sample}_R1_trimmed.fastq.gz",
+        fastq2="analysis/002_trimming/{sample}/{sample}_R2_trimmed.fastq.gz"
     output:
-        directory("analysis/006_count/kallisto/{sample}_{lane}")
+        directory("analysis/006_count/kallisto/{sample}")
     conda:
         "envs/006_kallisto.yml"
     threads:
         config["threads"]
     params:
         index=config["aligner"]["index_kallisto"],
-        # output dir with sample and lane
-        output=lambda wildcards: "analysis/006_count/kallisto/{}_{}".format(wildcards.sample, wildcards.lane)
+        # output dir with sample and
+        output=lambda wildcards: "analysis/006_count/kallisto/{}".format(wildcards.sample)
     log:
-        "logs/006_count/kallisto/{sample}/{sample}_{lane}.log"
+        "logs/006_count/kallisto/{sample}/{sample}.log"
     benchmark:
-        repeat("benchmarks/006_count/kallisto/{sample}/{sample}_{lane}.txt", config["benchmark"])
+        repeat("benchmarks/006_count/kallisto/{sample}/{sample}.txt", config["benchmark"])
     shell:
         """
         mkdir -p {params.output}

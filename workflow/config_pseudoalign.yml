@@ -1,10 +1,11 @@
+np_threads: 2
+
 threads: 4
 
 benchmark: 1
 
 aligner:
   tool: "kallisto"
-  # add full paths here
   index_hisat2: "ref/genome/hisat2_index/grch38/genome"
   index_kallisto: "ref/genome/kallisto_index/transcriptome.idx"
 

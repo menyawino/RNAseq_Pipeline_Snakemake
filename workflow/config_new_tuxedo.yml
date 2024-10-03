@@ -6,9 +6,8 @@ benchmark: 1
 
 aligner:
   tool: "hisat2"
-  # add full paths here
   index_hisat2: "ref/genome/hisat2_index/grch38/genome"
-  index_kallisto: "genome/kallisto_index/transcriptome.idx"
+  index_kallisto: "ref/genome/kallisto_index/transcriptome.idx"
 
 counting:
   tool: "stringtie"

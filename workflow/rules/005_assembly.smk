@@ -2,19 +2,19 @@
 
 rule stringtie_assembly:
     message: 
-        "Building individual assembly for {wildcards.sample}_{lane}"
+        "Building individual assembly for {wildcards.sample}"
     input:
-        bam="analysis/004_alignment/hisat2/{sample}_{lane}/{sample}_{lane}_Aligned.sortedByCoord.out.bam"
+        bam="analysis/004_alignment/hisat2/{sample}/{sample}_Aligned.sortedByCoord.out.bam"
     output:
-        "analysis/005_assembly/{sample}_{lane}/{sample}_{lane}.gtf"
+        "analysis/005_assembly/{sample}/{sample}.gtf"
     conda: 
         "envs/005_stringtie.yml"
     threads: 
         config["threads"]
     log:
-        "logs/005_stringtie/assembly/{sample}_{lane}.log"
+        "logs/005_stringtie/assembly/{sample}.log"
     benchmark:
-        repeat("benchmarks/005_stringtie/{sample}/{sample}_{lane}.txt", config["benchmark"])
+        repeat("benchmarks/005_stringtie/{sample}/{sample}.txt", config["benchmark"])
     shell:
         """
         stringtie \
@@ -30,7 +30,7 @@ rule stringtie_merge:
     message: 
         "Merging the assembled transcripts"
     input:
-        gtf=expand("analysis/005_assembly/{sample}_{lane}/{sample}_{lane}.gtf", sample=sample_mrn, lane=lane)
+        gtf=expand("analysis/005_assembly/{sample}/{sample}.gtf", sample=sample_mrn)
     output:
         "analysis/005_assembly/merged.gtf"
     conda: 

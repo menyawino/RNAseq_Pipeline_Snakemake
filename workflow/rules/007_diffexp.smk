@@ -4,15 +4,15 @@ rule ballgown_diffexp:
     message:
         "Running Ballgown for differential expression analysis"
     input:
-        "analysis/006_count/stringtie/{sample}/{sample}_{lane}.counts"
+        "analysis/006_count/stringtie/{sample}/{sample}.counts"
     output:
-        "results/diffexp/stringtie/{sample}_{lane}.diffexp.txt"
+        "results/diffexp/stringtie/{sample}.diffexp.txt"
     conda:
         "envs/007_ballgown.yml"
     log:
-        "logs/diffexp/{sample}_{lane}.log"
+        "logs/diffexp/{sample}.log"
     benchmark:
-        repeat("benchmarks/diffexp/{sample}_{lane}.txt", config["benchmark"])
+        repeat("benchmarks/diffexp/{sample}.txt", config["benchmark"])
     script:
         "scripts/ballgown.R"
 
@@ -23,7 +23,7 @@ rule sleuth_analysis:
     message:
         "Running Sleuth for differential expression analysis"
     input:
-        samples=expand("analysis/006_count/kallisto/{sample}_{lane}", sample=sample_mrn, lane=lane),
+        samples=expand("analysis/006_count/kallisto/{sample}", sample=sample_mrn),
         script="workflow/scripts/sleuth.R"
     output:
         "results/sleuth/differential_expression_results.tsv",

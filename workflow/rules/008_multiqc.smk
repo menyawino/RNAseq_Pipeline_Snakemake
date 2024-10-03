@@ -10,7 +10,7 @@ rule multiqc:
                sample=sample_mrn, lane=lane, R=read),
         expand("analysis/001_QC/{sample}/{sample}_{lane}_{R}_fastqc.html",
                sample=sample_mrn, lane=lane, R=read),
-        expand("analysis/006_count/{tool}/{sample}_{lane}",
+        expand("analysis/006_count/{tool}/{sample}",
                tool=count_tool, sample=sample_mrn, lane=lane)
     output:
         "analysis/007_multiqc/{tool}/multiqc_report.html"

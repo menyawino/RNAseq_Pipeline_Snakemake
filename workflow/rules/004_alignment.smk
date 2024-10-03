@@ -2,24 +2,22 @@
 
 rule hisat2_alignment:
     message:
-        "Aligning sample {wildcards.sample}_{lane} to the reference genome"
+        "Aligning sample {wildcards.sample} to the reference genome"
     input:
-        fq1="analysis/002_trimming/{sample}/{sample}_{lane}_R1_trimmed.fastq.gz",
-        fq2="analysis/002_trimming/{sample}/{sample}_{lane}_R2_trimmed.fastq.gz"
+        fq1="analysis/002_trimming/{sample}/{sample}_merged_R1_trimmed.fastq.gz",
+        fq2="analysis/002_trimming/{sample}/{sample}_merged_R2_trimmed.fastq.gz"
     output:
-        "analysis/004_alignment/hisat2/{sample}_{lane}/{sample}_{lane}.bam"
+        "analysis/004_alignment/hisat2/{sample}/{sample}.bam"
     conda:
         "envs/004_alignment.yml"
     threads:
         config["threads"]
     params: 
-        path=lambda wildcards: "results/{}".format(wildcards.sample),
         idx=config["aligner"]["index_hisat2"]
     log:
-        "logs/004_alignment/alignment/{sample}_{lane}_alignment.log"
+        "logs/004_alignment/{sample}_alignment.log"
     benchmark:
-        # "benchmarks/004_alignment/alignment/{sample}_{lane}_alignment.txt"
-        repeat("benchmarks/004_alignment/alignment/{sample}_{lane}_alignment.txt", 20)
+        repeat("benchmarks/004_alignment/alignment/{sample}_alignment.txt", config["benchmark"])
     shell:
         """
         hisat2 \
@@ -38,21 +36,21 @@ rule hisat2_alignment:
 
 rule sort_bam:
     message: 
-        "Sorting aligned sample {wildcards.sample}_{lane}"
+        "Sorting aligned sample {wildcards.sample}"
     input:
-        "analysis/004_alignment/hisat2/{sample}_{lane}/{sample}_{lane}.bam"
+        "analysis/004_alignment/hisat2/{sample}/{sample}.bam"
     output:
-        "analysis/004_alignment/hisat2/{sample}_{lane}/{sample}_{lane}_Aligned.sortedByCoord.out.bam"
-    conda: 
+        "analysis/004_alignment/hisat2/{sample}/{sample}_Aligned.sortedByCoord.out.bam"
+    conda:
         "envs/004_alignment.yml"
-    threads: 
+    threads:
         config["threads"]
-    params: 
+    params:
         path=lambda wildcards: "results/{}".format(wildcards.sample)
-    log:
-        "logs/004_alignment/sort/{sample}_{lane}_sort.log"
+    log:    
+        "logs/004_alignment/sort/{sample}_sort.log"
     benchmark:
-        repeat("benchmarks/004_alignment/sort/{sample}_{lane}_sort.txt", config["benchmark"])
+        repeat("benchmarks/004_alignment/sort/{sample}_sort.txt", config["benchmark"])
     shell:
         """
         samtools sort \
