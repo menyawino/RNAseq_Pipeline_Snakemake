@@ -17,6 +17,7 @@ sample_mrn = samples_data['sample'].unique().tolist()
 lane = samples_data['lane'].unique().tolist()
 read = samples_data['read'].unique().tolist()
 
+# This is a hack to get the wildcards to work with the regex
 wildcard_constraints:
     sample_mrn= '|'.join([re.escape(x) for x in sample_mrn]),
     lane= '|'.join([re.escape(x) for x in lane]),
@@ -38,7 +39,7 @@ count_tool = config['counting']['tool']
 
 if tool == "hisat2":
     # all_targets = expand("analysis/006_count/stringtie/{sample}_{lane}/{sample}_{lane}.counts",
-    all_targets = expand("analysis/006_count/stringtie/{sample}_{lane}",
+    all_targets = expand("analysis/006_count/stringtie/{sample}/",
                         sample=sample_mrn, lane=lane)
 elif tool == "kallisto":
     all_targets = "results/sleuth/differential_expression_results.tsv"

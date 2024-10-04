@@ -5,8 +5,7 @@ rule stringtie_count:
         "Counting reads in sample {wildcards.sample} with stringtie"
     input:
         gtf="analysis/005_assembly/merged.gtf",
-        bam=expand("analysis/004_alignment/hisat2/{sample}/{sample}_Aligned.sortedByCoord.out.bam",
-            sample=sample_mrn)
+        bam="analysis/004_alignment/hisat2/{sample}/{sample}_Aligned.sortedByCoord.out.bam"
     output:
         # "analysis/006_count/stringtie/{sample}/{sample}.counts"
         "analysis/006_count/stringtie/{sample}/"
