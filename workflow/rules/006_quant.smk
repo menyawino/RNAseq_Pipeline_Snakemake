@@ -9,12 +9,15 @@ rule stringtie_count:
             sample=sample_mrn)
     output:
         # "analysis/006_count/stringtie/{sample}/{sample}.counts"
-        "analysis/006_count/stringtie/{sample}"
+        "analysis/006_count/stringtie/{sample}/"
 
     conda: 
         "envs/005_stringtie.yml"
     threads: 
         config["threads"]
+    # stringtie requires a lot of memory which causes the cluster to kill the job, this would ensure there is enough memory before running the job
+    resources:
+        mem_mb=20000
     log:
         "logs/006_count/stringtie/{sample}.log"
     benchmark:
@@ -30,7 +33,6 @@ rule stringtie_count:
         {input.bam} \
         2> {log}
         """
-
 
 # A rule to run kallisto for read counting
 

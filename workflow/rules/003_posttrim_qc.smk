@@ -4,8 +4,8 @@ rule merge_reads:
     message:
         "Merging trimmed reads for sample {wildcards.sample}"
     input:
-        fq1=lambda wildcards: expand("analysis/002_trimming/{sample}/{sample}_L{lane}_R1_trimmed.fastq.gz", sample=wildcards.sample, lane=["001", "002", "003", "004"]),
-        fq2=lambda wildcards: expand("analysis/002_trimming/{sample}/{sample}_L{lane}_R2_trimmed.fastq.gz", sample=wildcards.sample, lane=["001", "002", "003", "004"])
+        fq1=lambda wildcards: expand("analysis/002_trimming/{sample}/{sample}_{lane}_R1_trimmed.fastq.gz", sample=wildcards.sample, lane=["L001", "L002", "L003", "L004"]),
+        fq2=lambda wildcards: expand("analysis/002_trimming/{sample}/{sample}_{lane}_R2_trimmed.fastq.gz", sample=wildcards.sample, lane=["L001", "L002", "L003", "L004"])
     output:
         fq1_merged="analysis/002_trimming/{sample}/{sample}_merged_R1_trimmed.fastq.gz",
         fq2_merged="analysis/002_trimming/{sample}/{sample}_merged_R2_trimmed.fastq.gz"
@@ -17,9 +17,10 @@ rule merge_reads:
         repeat("benchmarks/002_trimming/merge/{sample}_merge.txt", config["benchmark"])
     shell:
         """
-        cat {input.fq1} > {output.fq1_merged} && \
-        cat {input.fq2} > {output.fq2_merged} && \
-        rm {input.fq1} {input.fq2}
+        zcat {input.fq1} | gzip > {output.fq1_merged}
+        zcat {input.fq2} | gzip > {output.fq2_merged}
+        > {log} 2>&1
+        # rm {input.fq1} {input.fq2}
         """
 
 
@@ -31,18 +32,18 @@ rule posttrim_fastqc:
     conda: 
         "envs/001_QC.yml"
     input:
-        "analysis/002_trimming/{sample}/{sample}_merged_R{R}_trimmed.fastq.gz"
+        "analysis/002_trimming/{sample}/{sample}_merged_{R}_trimmed.fastq.gz"
     output:
-        html="analysis/003_posttrim_QC/{sample}/{sample}_merged_R{R}_trimmed_fastqc.html",
-        zip="analysis/003_posttrim_QC/{sample}/{sample}_merged_R{R}_trimmed_fastqc.zip"
+        html="analysis/003_posttrim_QC/{sample}/{sample}_merged_{R}_trimmed_fastqc.html",
+        zip="analysis/003_posttrim_QC/{sample}/{sample}_merged_{R}_trimmed_fastqc.zip"
     threads:
         config["np_threads"]
     params:
         path=lambda wildcards: "analysis/003_posttrim_QC/{}".format(wildcards.sample)
     log:
-        "logs/003_posttrim_QC/{sample}/{sample}_merged_R{R}_trimmed.log"
+        "logs/003_posttrim_QC/{sample}/{sample}_merged_{R}_trimmed.log"
     benchmark:
-        repeat("benchmarks/003_posttrim_QC/{sample}/{sample}_merged_R{R}_trimmed.txt", config["benchmark"])
+        repeat("benchmarks/003_posttrim_QC/{sample}/{sample}_merged_{R}_trimmed.txt", config["benchmark"])
     shell:
         """
         mkdir -p {params.path}
@@ -51,6 +52,4 @@ rule posttrim_fastqc:
         -t {threads} \
         -o {params.path} \
         > {log} 2>&1
-        mv {params.path}/{wildcards.sample}_merged_R{R}_trimmed_fastqc.html {output.html}
-        mv {params.path}/{wildcards.sample}_merged_R{R}_trimmed_fastqc.zip {output.zip}
         """

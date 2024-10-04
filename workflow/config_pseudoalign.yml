@@ -11,3 +11,5 @@ aligner:
 
 counting:
   tool: "kallisto"
+
+retry: 1

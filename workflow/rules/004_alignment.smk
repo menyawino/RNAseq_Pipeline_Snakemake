@@ -15,7 +15,7 @@ rule hisat2_alignment:
     params: 
         idx=config["aligner"]["index_hisat2"]
     log:
-        "logs/004_alignment/{sample}_alignment.log"
+        "logs/004_alignment/alignment/{sample}_alignment.log"
     benchmark:
         repeat("benchmarks/004_alignment/alignment/{sample}_alignment.txt", config["benchmark"])
     shell:

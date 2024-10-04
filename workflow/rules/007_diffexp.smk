@@ -31,7 +31,7 @@ rule sleuth_analysis:
     conda:
         "envs/sleuth.yml"
     log:
-        "logs/007_sleuth_analysis.log"
+        "logs/007_diffexp/sleuth_analysis.log"
     benchmark:
         repeat("benchmarks/007_sleuth_analysis.txt", config["benchmark"])
     shell:
@@ -39,5 +39,6 @@ rule sleuth_analysis:
         Rscript {input.script} \
         --output {output[0]} \
         --report {output[1]} \
-        --log {log}
+        --log {log} \
+        > {log} 2>&1
         """

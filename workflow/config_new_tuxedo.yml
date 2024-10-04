@@ -11,3 +11,5 @@ aligner:
 
 counting:
   tool: "stringtie"
+
+retry: 1
