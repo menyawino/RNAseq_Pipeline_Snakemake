@@ -1,20 +1,20 @@
 # A rule to run kallisto for read counting
 
 rule stringtie_count:
-    message: 
+    message:
         "Counting reads in sample {wildcards.sample} with stringtie"
     input:
         gtf="analysis/005_assembly/merged.gtf",
         bam="analysis/004_alignment/hisat2/{sample}/{sample}_Aligned.sortedByCoord.out.bam"
     output:
-        # "analysis/006_count/stringtie/{sample}/{sample}.counts"
         "analysis/006_count/stringtie/{sample}/"
-
-    conda: 
+    conda:
         "envs/005_stringtie.yml"
-    threads: 
+    threads:
         config["threads"]
     # stringtie requires a lot of memory which causes the cluster to kill the job, this would ensure there is enough memory before running the job
+    params:
+        output=lambda wildcards: "analysis/006_count/stringtie/{}/".format(wildcards.sample)
     resources:
         mem_mb=20000
     log:
@@ -28,7 +28,7 @@ rule stringtie_count:
         -B \
         -p {threads} \
         -G {input.gtf} \
-        -o {output} \
+        -o {params.output} \
         {input.bam} \
         2> {log}
         """

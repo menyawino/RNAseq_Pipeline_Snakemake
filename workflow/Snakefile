@@ -28,7 +28,6 @@ wildcard_constraints:
 ####### Configuration ######
 ############################
 
-# change this parameter to the path of the config file using
 # set automatically by the python wrapper script
 
 configfile: "workflow/config_new_tuxedo.yml"
@@ -44,7 +43,7 @@ if tool == "hisat2":
 elif tool == "kallisto":
     all_targets = "results/sleuth/differential_expression_results.tsv"
 else:
-    raise ValueError("Unsupported aligner specified in config.yaml")
+    raise ValueError("Unsupported aligner specified in config file")
 
 
 ############################
