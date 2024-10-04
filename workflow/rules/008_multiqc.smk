@@ -16,7 +16,6 @@ rule multiqc:
         "analysis/007_multiqc/{tool}/multiqc_report.html"
     params:
         output=lambda wildcards: "analysis/007_multiqc/{}".format(wildcards.tool)
-        
     log:
         "logs/multiqc/{tool}/multiqc_raw.log"
     benchmark:

@@ -1,4 +1,4 @@
-np_threads: 2
+np_threads: 1
 
 threads: 4
 
