@@ -90,8 +90,8 @@ def run_snakemake(configfile, verbose=False, extra_args=[]):
     thisdir = os.path.dirname(__file__)
     snakefile = os.path.join(thisdir, 'workflow/Snakefile')
 
-    # Basic Snakemake command
-    cmd = ["snakemake", "-s", snakefile, "--use-conda", "-k", "--benchmark-extended"]
+    # Basic Snakemake command (Add extra arguments to this list)
+    cmd = ["snakemake", "-s", snakefile, "--use-conda", "-k", "--benchmark-extended", "--rerun-incomplete"]
 
     # Add additional Snakemake arguments
     cmd += list(extra_args)
@@ -123,8 +123,6 @@ def run_snakemake(configfile, verbose=False, extra_args=[]):
     
     # generate snakemake report for the pipeline
     get_snakemake_report(configfile)
-
-    # display resource usage
     
 
 
@@ -178,7 +176,6 @@ def run(configfile, snakemake_args, verbose):
     
     track_resources(start_time, net_start, verbose=verbose)
     
-
 
 cli.add_command(run)
 
