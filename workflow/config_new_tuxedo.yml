@@ -1,6 +1,6 @@
 np_threads: 1
 
-threads: 4
+threads: 10
 
 benchmark: 1
 

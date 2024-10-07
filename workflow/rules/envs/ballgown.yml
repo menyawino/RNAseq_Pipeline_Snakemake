@@ -1,0 +1,34 @@
+name: ballgown
+
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+  - r
+
+dependencies:
+  - r-base
+  - r-essentials
+  - r-devtools
+  - r-ggplot2
+  - r-tidyverse
+  - r-dplyr
+  - r-gplots
+  - r-ggfortify
+  - r-ggrepel
+  - r-purrr
+  - r-annotationhub
+  - r-ensembldb
+  - r-dose
+  - r-pathview
+  - r-clusterprofiler
+  - bioconductor-biomart
+  - bioconductor-ballgown
+  - bioconductor-genefilter
+  - bioconductor-org.hs.eg.db
+  - r-rskittlebrewer
+
+  # System dependencies for R packages
+  - libxml2
+  - libiconv
+  - r-curl

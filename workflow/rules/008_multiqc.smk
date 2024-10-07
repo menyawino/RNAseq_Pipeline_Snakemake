@@ -22,7 +22,7 @@ rule multiqc:
         repeat("benchmarks/multiqc/{tool}/multiqc_raw.txt", config["benchmark"])
     shell:
         """
-        multiqc analysis/001_QC analysis/003_posttrim_qc logs \
+        multiqc analysis logs \
         -o {params.output} \
         -f \
         > {log} 2>&1
