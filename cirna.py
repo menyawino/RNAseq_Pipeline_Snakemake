@@ -150,7 +150,7 @@ def get_snakemake_report(configfile):
     thisdir = os.path.dirname(__file__)
     snakefile = os.path.join(thisdir, 'workflow/Snakefile')
     
-    os.system("snakemake -s " + snakefile + " --use-conda --report " + 
+    os.system("snakemake -s " + snakefile + " --use-conda --report results/snakemake_report.html" + 
               "--configfile " + configfile + " --quiet")
     
 

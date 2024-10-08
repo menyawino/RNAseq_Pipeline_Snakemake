@@ -26,8 +26,10 @@ rule sleuth_analysis:
         samples=expand("analysis/006_count/kallisto/{sample}", sample=sample_mrn),
         script="workflow/scripts/sleuth.R"
     output:
-        "results/sleuth/differential_expression_results.tsv",
-        "results/sleuth/sleuth_report.pdf"
+        "results/sleuth/",
+        "results/sleuth/sleuth_report.pdf",
+        "results/sleuth/differentially_expressed_genes.txt",
+        "results/sleuth/significant_genes.txt"
     conda:
         "envs/sleuth.yml"
     log:

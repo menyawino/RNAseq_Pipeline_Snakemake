@@ -39,48 +39,68 @@ sample_metadata
 so <- sleuth_prep(sample_metadata, ~condition)
 
 
-# Fit models
+# Fit models for statistical testing
 so <- sleuth_fit(so, ~condition, "full")
-so <- sleuth_fit(so, ~1, "reduced")
 
-# Perform likelihood ratio test
-so <- sleuth_lrt(so, "reduced", "full")
 
-# Get results
-sleuth_results <- sleuth_results(so, "reduced:full", "wt", show_all = FALSE)
+# Perform Wald test for the 'condition' factor (specify the level you want to test)
+so <- sleuth_wt(so, "conditionHCM")
 
-write.table(sleuth_results, file = "sleuth_results.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+# Get Wald test results for the specified condition
+sleuth_results <- sleuth_results(so, "conditionHCM", show_all = TRUE)  # The second argument refers to the specific coefficient being tested
+
+# Calculate fold change (FC) from the beta values (log2 fold change)
+sleuth_results$fold_change <- 2^sleuth_results$b
+
+# Write results to file (manual)
+# write.table(sleuth_results, file = "sleuth_results.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
 # Write results to file
-write.table(sleuth_results, file = opt$output, sep = "\t", quote = FALSE, row.names = FALSE)
+write.table(sleuth_results, file = paste0(opt$output, "differentially_expressed_genes.txt"), sep = "\t", quote = FALSE, row.names = FALSE)
 
 # Get significant results
-sleuth_significant <- dplyr::filter(sleuth_results, pval <= 0.05)
+sleuth_significant <- sleuth_results %>%
+  filter((fold_change >= 2 | fold_change <= 0.5) & pval < 0.05)
+
+# Add log2 fold change to the significant results
+sleuth_significant$log2_fold_change <- log2(sleuth_significant$fold_change)
 
 # Remove things that are not genes from target_id pattern
 sleuth_significant$target_id <- gsub("\\..*", "", sleuth_significant$target_id)
+
+# Sort significant results by log2 fold change
+sleuth_significant <- arrange(sleuth_significant, desc(log2_fold_change))
+
+# Print significant results
 head(sleuth_significant, 10)
+tail(sleuth_significant, 10)
 
 
 # write significant results to file
-write.table(sleuth_significant, file = "significant_results.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+write.table(sleuth_significant, file = paste0(opt$output, "significant_genes.txt"), sep = "\t", quote = FALSE, row.names = FALSE)
 
-# Generate a PDF report with visualizations
-pdf(opt$report, width=11, height=8.5)
 
-# number of significant results
-nrow(sleuth_significant)
+# Start PDF
+pdf(paste0(opt$report, "report.pdf"))
 
 # plot p-value distribution
 hist(sleuth_results$pval, breaks = 50, main = "P-Value Distribution")
 
+# Plot log2 fold change distribution
+hist(sleuth_results$log2_fold_change, breaks = 50, main = "Log2 Fold Change Distribution")
+
+# Plot MA plot
+plot(so, "conditionHCM")
+
+
 # Plot PCA with group the points with a circle around them
 pca_data <- plot_pca(so, color_by = "condition")
+
+# Print PCA data
 print(pca_data)
 
 # save the plot to a file
-ggsave("pca_plot.pdf", pca_data)
+ggsave(paste0(opt$output, "pca_plot.pdf"), pca_data)
 
 # End PDF
 dev.off()
-

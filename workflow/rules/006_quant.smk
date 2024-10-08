@@ -49,10 +49,9 @@ rule kallisto_count:
         config["threads"]
     params:
         index=config["aligner"]["index_kallisto"],
-        # output dir with sample and
         output=lambda wildcards: "analysis/006_count/kallisto/{}".format(wildcards.sample)
     log:
-        "logs/006_count/kallisto/{sample}/{sample}.log"
+        "logs/006_count/kallisto/{sample}.log"
     benchmark:
         repeat("benchmarks/006_count/kallisto/{sample}/{sample}.txt", config["benchmark"])
     shell:
