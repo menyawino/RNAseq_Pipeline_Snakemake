@@ -7,7 +7,7 @@ rule hisat2_alignment:
         fq1="analysis/002_trimming/{sample}/{sample}_merged_R1_trimmed.fastq.gz",
         fq2="analysis/002_trimming/{sample}/{sample}_merged_R2_trimmed.fastq.gz"
     output:
-        "analysis/004_alignment/hisat2/{sample}/{sample}.bam"
+        temp("analysis/004_alignment/hisat2/{sample}/{sample}.bam")
     conda:
         "envs/004_alignment.yml"
     threads:
