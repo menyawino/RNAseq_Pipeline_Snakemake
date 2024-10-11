@@ -4,7 +4,7 @@
 /Snakefile copy
 /__pycache__
 /report.html
-/samples_r_metadata.csv
+/samples_r.csv
 /work
 /samples/*
 /analysis/*
