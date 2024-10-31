@@ -1,19 +1,8 @@
 #!/usr/bin/env Rscript
 
-# install required packages
-install.packages("optparse")
-install.packages("sleuth")
-install.packages("tidyverse")
-install.packages("gplots")
-install.packages("biomaRt")
-
-# install them using mamba command line (biomard it from biocmanager)
-
-
-
 library(optparse)
 library(sleuth)
-library(tidyverse)
+library/tidyverse)
 library(gplots)
 library(biomaRt)
 
@@ -169,17 +158,32 @@ mart_hg37 <- biomaRt::useMart(biomart = "ENSEMBL_MART_ENSEMBL", dataset = "hsapi
 t2g_hg37 <- biomaRt::getBM(attributes = c("ensembl_transcript_id", "ensembl_gene_id", "external_gene_name"), mart = mart_hg37)
 t2g_hg37 <- dplyr::rename(t2g_hg37, target_id = ensembl_transcript_id, ens_gene = ensembl_gene_id, ext_gene = external_gene_name)
 
+#################### Debugging ####################
+
+# Print the first few rows of t2g_hg37 to inspect its structure and contents
+print(head(t2g_hg37))
+
+# Print the first few rows of the Kallisto results to inspect their structure and contents
+kallisto_results <- read_kallisto(sample_metadata$path[1])
+print(head(kallisto_results))
+
+# Check for common transcript IDs between Kallisto results and t2g_hg37
+common_transcripts <- intersect(kallisto_results$target_id, t2g_hg37$target_id)
+print(length(common_transcripts))
+if (length(common_transcripts) == 0) {
+  stop("No common transcript IDs found between Kallisto results and target mapping.")
+}
+
+#################### Debugging ####################
+
+
+
+
 so_hg37 <- sleuth_prep(sample_metadata, extra_bootstrap_summary = TRUE, target_mapping = t2g_hg37, aggregation_column = 'ens_gene', gene_mode = TRUE)
 so_hg37 <- sleuth_fit(so_hg37, ~condition, 'full')
 so_hg37 <- sleuth_fit(so_hg37, ~1, 'reduced')
 soLRT_hg37 <- sleuth_lrt(so_hg37, 'reduced', 'full')
 
-# HG38 Gene-level DEA
-t2g_hg38 <- read.csv("kallisto_sleuth/LRS_kallisto_hg38_t2g2.csv", header = TRUE, sep = ",")
-so_hg38 <- sleuth_prep(sample_metadata, extra_bootstrap_summary = TRUE, target_mapping = t2g_hg38, aggregation_column = 'ens_gene', gene_mode = TRUE)
-so_hg38 <- sleuth_fit(so_hg38, ~condition, 'full')
-so_hg38 <- sleuth_fit(so_hg38, ~1, 'reduced')
-soLRT_hg38 <- sleuth_lrt(so_hg38, 'reduced', 'full')
 
 # Output results
 countsPerCondition <- prepOutputDF(soLRT)
@@ -214,15 +218,15 @@ countsPerCondition <- countsPerCondition[, -1]
 write.table(countsPerCondition, paste0(opt$output, 'LRS_kallisto_', build, '_sig', level, '_0.05_foldchange.csv'), sep = ',', row.names = TRUE, col.names = NA, quote = FALSE)
 
 # For hg38 genes
-resultsTable_hg38 <- sleuth_results(soLRT_hg38, 'reduced:full', 'lrt', show_all = FALSE)
+resultsTable_hg38 <- sleuth_results(soLRT, 'reduced:full', 'lrt', show_all = FALSE)
 sigResultsTable_hg38 <- dplyr::filter(resultsTable_hg38, qval <= 0.05)
 sigResultsTable_hg38 <- sigResultsTable_hg38 %>% distinct()
 sigResultsList_hg38 <- sigResultsTable_hg38$target_id
-countsPerCondition <- fetchConditionTPMmatrix(soLRT_hg38)
+countsPerCondition <- fetchConditionTPMmatrix(soLRT)
 countsPerCondition <- countsPerCondition[sigResultsList_hg38, ]
 countsPerCondition <- countsPerCondition %>% mutate(logFoldChange = log2(HCM / Control))
 countsPerCondition$qval <- resultsTable_hg38$qval[match(rownames(countsPerCondition), resultsTable_hg38$target_id)]
-t2g_hg38 <- t2g_hg38[, c('ens_gene', 'ext_gene')]
+t2g_hg38 <- t2g[, c('ens_gene', 'ext_gene')]
 t2g_hg38 <- t2g_hg38[t2g_hg38$ens_gene %in% sigResultsList_hg38, ]
 t2g_hg38 <- unique(t2g_hg38)
 t2g_hg38 <- t2g_hg38 %>% rename('target_id' = 'ens_gene')
