@@ -29,8 +29,7 @@ wildcard_constraints:
 ############################
 
 # set automatically by the python wrapper script
-
-configfile: "workflow/config_new_tuxedo.yml"
+# configfile: "workflow/config_new_tuxedo.yml"
 
 tool = config['aligner']['tool']
 count_tool = config['counting']['tool']
